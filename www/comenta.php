@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute([$idProduto]);
         
         if ($stmt->rowCount() > 0) {
-            $stmt = $conexion->prepare("INSERT INTO comentarios (usuario, idProduto, Comentario, dataCreación, moderado) 
+            $stmt = $conexion->prepare("INSERT INTO comentarios (usuario, idProduto, comentario, dataCreacion, moderado) 
                                       VALUES (?, ?, ?, NOW(), 'non')");
             $stmt->execute([$usuario, $idProduto, $comentario]);
             

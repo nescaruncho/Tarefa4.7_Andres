@@ -34,11 +34,14 @@ try {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Productos</title>
 </head>
 <body>
     <h1><?php echo $saludo . ", " . htmlspecialchars($_SESSION['usuario']); ?></h1>
-    <a href="pechaSesion.php">Cerrar Sesión</a>
+    <a href="pecharSesion.php">Cerrar Sesión</a>
     
     <?php if ($_SESSION['rol'] == 'moderador'): ?>
         <a href="xestionaComentarios.php">Gestionar Comentarios</a>

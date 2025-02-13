@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     try {
         if ($accion == 'aprobar') {
-            $stmt = $conexion->prepare("UPDATE comentarios SET moderado = 'si', dataModeración = NOW() WHERE id = ?");
+            $stmt = $conexion->prepare("UPDATE comentarios SET moderado = 'si', dataModeracion = NOW() WHERE id = ?");
         } else if ($accion == 'eliminar') {
             $stmt = $conexion->prepare("DELETE FROM comentarios WHERE id = ?");
         }
@@ -44,10 +44,13 @@ try {
 <html>
 <head>
     <title>Gestión de Comentarios</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Gestión de Comentarios</h1>
-    <a href="pechaSesion.php">Cerrar Sesión</a>
+    <a href="pecharSesion.php">Cerrar Sesión</a>
     <a href="mostra.php">Volver a Productos</a>
     
     <?php if (empty($comentarios)): ?>
@@ -57,8 +60,8 @@ try {
             <div class="comentario">
                 <p><strong>Usuario:</strong> <?php echo htmlspecialchars($comentario['nomeUsuario']); ?></p>
                 <p><strong>Producto:</strong> <?php echo htmlspecialchars($comentario['nomeProduto']); ?></p>
-                <p><strong>Comentario:</strong> <?php echo htmlspecialchars($comentario['Comentario']); ?></p>
-                <p><strong>Fecha:</strong> <?php echo htmlspecialchars($comentario['dataCreación']); ?></p>
+                <p><strong>Comentario:</strong> <?php echo htmlspecialchars($comentario['comentario']); ?></p>
+                <p><strong>Fecha:</strong> <?php echo htmlspecialchars($comentario['dataCreacion']); ?></p>
                 
                 <form method="POST">
                     <input type="hidden" name="idComentario" value="<?php echo $comentario['id']; ?>">
