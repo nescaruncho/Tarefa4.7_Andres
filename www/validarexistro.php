@@ -1,34 +1,30 @@
 <?php
-include('conexion.php');  // Aquí incluirías el archivo de conexión a la base de datos
+require_once 'conexion.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $nomeUsuario = htmlspecialchars($_POST['nomeUsuario']);  // Sanitizamos los datos
-    $nomeCompleto = htmlspecialchars($_POST['nomeCompleto']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nomeUsuario = htmlspecialchars(trim($_POST['nomeUsuario']));
+    $nomeCompleto = htmlspecialchars(trim($_POST['nomeCompleto']));
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $contraseña = password_hash($_POST['contraseña'], PASSWORD_DEFAULT);  // Guardar contraseña de forma segura
-
-    // Validación (asegurarse de que no exista el usuario)
-    $sql = "SELECT * FROM usuarios WHERE nomeUsuario = :nomeUsuario";
-    $stmt = $conn->prepare($sql);
-    $stmt->bindParam(':nomeUsuario', $nomeUsuario);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($result) {
-        echo "El nombre de usuario ya está registrado.";
-    } else {
-        $rol = 'usuario';  // Rol por defecto
-        $sql = "INSERT INTO usuarios (nomeUsuario, nomeCompleto, email, contraseña, rol) VALUES (:nomeUsuario, :nomeCompleto, :email, :contraseña, :rol)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':nomeUsuario', $nomeUsuario);
-        $stmt->bindParam(':nomeCompleto', $nomeCompleto);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':contraseña', $contraseña);
-        $stmt->bindParam(':rol', $rol);
-        $stmt->execute();
+    $contrasinal = password_hash($_POST['contrasinal'], PASSWORD_DEFAULT);
+    
+    try {
+        // Verificar si el usuario ya existe
+        $stmt = $conexion->prepare("SELECT nomeUsuario FROM usuarios WHERE nomeUsuario = ?");
+        $stmt->execute([$nomeUsuario]);
         
-        // Redirigir al login después de registrarse
-        header("Location: login.php");
+        if ($stmt->rowCount() > 0) {
+            header("Location: rexistro.html?error=usuario_existe");
+            exit();
+        }
+        
+        // Insertar nuevo usuario
+        $stmt = $conexion->prepare("INSERT INTO usuarios (nomeUsuario, nomeCompleto, contrasinal, email, rol) VALUES (?, ?, ?, ?, 'usuario')");
+        $stmt->execute([$nomeUsuario, $nomeCompleto, $contrasinal, $email]);
+        
+        header("Location: login.php?registro=exitoso");
+        exit();
+    } catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 ?>

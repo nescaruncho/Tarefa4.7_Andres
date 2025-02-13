@@ -1,15 +1,24 @@
-<form action="validarexistro.php" method="POST">
-    <label for="nomeUsuario">Nombre de Usuario:</label>
-    <input type="text" name="nomeUsuario" id="nomeUsuario" required>
-
-    <label for="nomeCompleto">Nombre Completo:</label>
-    <input type="text" name="nomeCompleto" id="nomeCompleto" required>
-
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email" required>
-
-    <label for="contraseña">Contraseña:</label>
-    <input type="password" name="contraseña" id="contraseña" required>
-
-    <button type="submit">Registrar</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro</title>
+</head>
+<body>
+    <form action="validarexistro.php" method="POST">
+        <label for="nomeUsuario">Nombre de Usuario:</label>
+        <input type="text" name="nomeUsuario" required><br>
+        
+        <label for="nomeCompleto">Nombre Completo:</label>
+        <input type="text" name="nomeCompleto" required><br>
+        
+        <label for="contrasinal">Contraseña:</label>
+        <input type="password" name="contrasinal" required><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" name="email" required><br>
+        
+        <input type="submit" value="Registrarse">
+    </form>
+    <a href="login.php">Volver al Login</a>
+</body>
+</html>

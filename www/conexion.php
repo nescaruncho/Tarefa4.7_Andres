@@ -1,16 +1,17 @@
 <?php
-// Parámetros de conexión
-$host = 'localhost';
-$db = 'tarefa4.7';
-$user = 'tarefa';
-$pass = 'Tarefa4.7';
+$servidor = "dbXdebug";
+$usuario = "tarefa";
+$contrasinal = "Tarefa4.7";
+$bd = "tarefa4.7";
 
-// Establecer la conexión utilizando PDO
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Error de conexión: " . $e->getMessage());
+    $conexion = new PDO("mysql:host=$servidor;dbname=$bd;charset=utf8", $usuario, $contrasinal);
+    // Configurar el modo de error PDO para que lance excepciones
+    $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Configurar el modo de fetch por defecto a FETCH_ASSOC
+    $conexion->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch(PDOException $e) {
+    echo "Error de conexión: " . $e->getMessage();
+    die();
 }
 ?>
