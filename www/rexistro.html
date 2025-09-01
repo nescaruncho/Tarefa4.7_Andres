@@ -1,27 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Registro</title>
+    <title>Rexistro</title>
 </head>
 <body>
-    <form action="validarexistro.php" method="POST">
-        <label for="nomeUsuario">Nombre de Usuario:</label>
-        <input type="text" name="nomeUsuario" required><br>
-        
-        <label for="nomeCompleto">Nombre Completo:</label>
-        <input type="text" name="nomeCompleto" required><br>
-        
-        <label for="contrasinal">Contraseña:</label>
-        <input type="password" name="contrasinal" required><br>
-        
+    <form action="validaRexistro.php" method="post">
+        <label for="nomeUsuario">Nome de usuario:</label>
+        <input type="text" name="nomeUsuario" id="nomeUsuario" required>
+
+        <label for="nomeCompleto">Nome completo:</label>
+        <input type="text" name="nomeCompleto" id="nomeCompleto" required>
+
         <label for="email">Email:</label>
-        <input type="email" name="email" required><br>
+        <input type="email" name="email" id="email">
+
+        <label for="contrasinal">Contrasinal:</label>
+        <input type="password" name="contrasinal" id="contrasinal">
+
+        <input type="submit" value="Rexistrarse">
         
-        <input type="submit" value="Registrarse">
+        <a href="login.php">Xa teño conta</a>
     </form>
-    <a href="login.php">Volver al Login</a>
 </body>
 </html>

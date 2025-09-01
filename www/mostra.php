@@ -1,77 +1,84 @@
 <?php
 session_start();
+
 require_once 'conexion.php';
 
-// Verificar si el usuario está logueado
 if (!isset($_SESSION['usuario'])) {
     header("Location: login.php");
     exit();
 }
 
-// Obtener el idioma de la cookie
 $idioma = isset($_COOKIE['idioma']) ? $_COOKIE['idioma'] : 'es';
-$saludo = ($idioma == 'es') ? 'Bienvenido' : 'Benvido';
+$saludo = ($idioma === 'es') ? 'Bienvenido, ' . htmlspecialchars($_SESSION['usuario']) : 'Benvido, ' . htmlspecialchars($_SESSION['usuario']);
 
 try {
-    // Obtener todos los productos
     $stmt = $conexion->query("SELECT * FROM produto");
-    $productos = $stmt->fetchAll();
+    $produtos = $stmt->fetchAll();
 
-    // Obtener comentarios moderados
-    $stmt = $conexion->prepare("SELECT idComentario, usuario, comentario FROM comentarios
-                               WHERE moderado = 'si'");
-    $stmt->execute();
-    $comentarios = $stmt->fetchAll();
+    $stmtComentarios = $conexion->prepare("SELECT c.idComentario, c.usuario, c.comentario, c.dataCreacion, u.nomeUsuario FROM comentarios c JOIN usuarios u ON u.id = c.usuario WHERE moderado = 'si' AND c.idProduto = ?");
 
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
-    exit();
+    echo "Erro conectando a base de datos: " . $e->getMessage();
 }
+
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Productos</title>
+    <title>Mostra</title>
 </head>
 
 <body>
-    <h1><?php echo $saludo . ", " . htmlspecialchars($_SESSION['usuario']); ?></h1>
-    <a href="pecharSesion.php">Cerrar Sesión</a>
+    <h1><?php echo $saludo ?></h1>
+    <a href="pechaSesion.php">Pechar sesión</a>
 
-    <?php if ($_SESSION['rol'] == 'moderador'): ?>
-        <a href="xestionaComentarios.php">Gestionar Comentarios</a>
+    <?php if($_SESSION['rol'] === 'moderador'): ?>
+        <a href="xestionaComentarios.php">Ir a xestionar comentarios</a>
     <?php endif; ?>
 
-    <h2>Productos</h2>
-    <?php foreach ($productos as $producto): ?>
+    <h2>Produtos</h2>
+    <?php foreach ($produtos as $produto): ?>
         <div class="producto">
-            <h3><?php echo htmlspecialchars($producto['nome']); ?></h3>
-            <p><?php echo htmlspecialchars($producto['descricion']); ?></p>
-            <?php if (!empty($producto['imaxe'])): ?>
-                <img src="<?php echo htmlspecialchars($producto['imaxe']); ?>" alt="Imagen del producto">
+            <h3><?php echo htmlspecialchars($produto['nome']); ?></h3>
+            <p><?php echo htmlspecialchars($produto['descricion']); ?></p>
+            <?php if (!empty($produto['imaxe'])): ?>
+                <img src="<?php echo htmlspecialchars($produto['imaxe']); ?>"
+                    alt="Imaxe de <?php echo htmlspecialchars($produto['nome']); ?>">
             <?php endif; ?>
-
-            <h4>Comentarios:</h4>
+            <h4>Comentarios</h4>
             <?php
-            foreach ($comentarios as $comentario) {
-                if ($comentario['idProduto'] == $producto['idProduto']) {
-                    echo "<p><strong>" . htmlspecialchars($comentario['nomeUsuario']) . ":</strong> ";
-                    echo htmlspecialchars($comentario['comentario']) . "</p>";
-                }
-            }
+            $stmtComentarios->execute([$produto['idProduto']]);
+            $comentarios = $stmtComentarios->fetchAll();
             ?>
 
-            <?php if ($_SESSION['rol'] == 'usuario'): ?>
-                <form action="comenta.php" method="POST">
-                    <input type="hidden" name="idProduto" value="<?php echo $producto['idProduto']; ?>">
-                    <textarea name="comentario" required></textarea>
-                    <input type="submit" value="Añadir Comentario">
+            <?php if (count($comentarios) === 0): ?>
+                <p class="muted">Ainda non hai comentarios</p>
+            <?php else: ?>
+                <ul class="comentarios">
+                    <?php foreach ($comentarios as $comentario): ?>
+                        <li>
+                            <strong><?php echo htmlspecialchars($comentario['nomeUsuario']); ?></strong><br>
+                            <?php echo nl2br(htmlspecialchars($comentario['comentario'])); ?><br>
+                            <small><?php echo htmlspecialchars($comentario['dataCreacion']); ?></small>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+
+            <?php if ($_SESSION['rol'] === 'usuario'): ?>
+
+                <form action="comenta.php" method="post">
+                    <label for="comentario">Introduce o teu comentario:</label>
+                    <input type="hidden" name="idProduto" value="<?php echo $produto['idProduto']; ?>">
+                    <input type="text" name="comentario" id="comentario" required>
+                    <input type="submit" name="enviarComentario" value="Enviar">
                 </form>
+
             <?php endif; ?>
         </div>
     <?php endforeach; ?>

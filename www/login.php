@@ -1,30 +1,31 @@
 <?php
 session_start();
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
     <title>Login</title>
 </head>
 <body>
-    <form action="validalogin.php" method="POST">
-        <label for="usuario">Usuario:</label>
-        <input type="text" name="usuario" required><br>
-        
-        <label for="contrasinal">Contraseña:</label>
-        <input type="password" name="contrasinal" required><br>
-        
+    <form action="validaLogin.php" method="post">
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" required>
+
+        <label for="contrasinal">Contrasinal:</label>
+        <input type="password" name="contrasinal" id="contrasinal">
+
         <label for="idioma">Idioma:</label>
-        <select name="idioma">
+        <select name="idioma" id="idioma">
             <option value="es">Español</option>
             <option value="gl">Galego</option>
-        </select><br>
-        
-        <input type="submit" value="Iniciar Sesión">
+        </select>
+
+        <input type="submit" value="Iniciar sesión">
+        <a href="rexistro.html">Crear unha conta</a>
     </form>
-    <a href="rexistro.html">Registrarse</a>
 </body>
 </html>
